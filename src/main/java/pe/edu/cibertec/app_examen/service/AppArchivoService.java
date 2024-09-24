@@ -13,34 +13,16 @@ public class AppArchivoService {
 
     private final AppService appService;
 
-    public CompletableFuture<String> crearArchivoAleatorio() {
-        CompletableFuture<Void> tarea1 = CompletableFuture.runAsync(() -> {
-            try {
-                appService.crearArchivo5s();
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException("Error creando archivo de 5 segundos: " + e.getMessage());
-            }
-        });
+    public CompletableFuture<String> crearArchivosAleatorios() throws IOException, InterruptedException {
+        CompletableFuture<Void> tarea1 = appService.crearArchivo5s();
+        CompletableFuture<Void> tarea2 = appService.crearArchivo7s();
+        CompletableFuture<Void> tarea3 = appService.crearArchivo10s();
 
-        CompletableFuture<Void> tarea2 = CompletableFuture.runAsync(() -> {
-            try {
-                appService.crearArchivo7s();
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException("Error creando archivo de 7 segundos: " + e.getMessage());
-            }
-        });
-
-        CompletableFuture<Void> tarea3 = CompletableFuture.runAsync(() -> {
-            try {
-                appService.crearArchivo10s();
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException("Error creando archivo de 10 segundos: " + e.getMessage());
-            }
-        });
-
-        // allOf = UNIR QUE TODAS LAS TAREAS TERMINEN CORRECTAMENTE
         return CompletableFuture.allOf(tarea1, tarea2, tarea3)
                 .thenApply(result -> "Todos los archivos han sido creados exitosamente.")
-                .exceptionally(ex -> "Error al ejecutar tareas: " + ex.getMessage());
-    }
+                .exceptionally(ex -> {
+                    Throwable cause = ex.getCause() != null ? ex.getCause() : ex;
+                    return "Error al ejecutar tareas: " + cause.getMessage();
+         });
+}
 }
