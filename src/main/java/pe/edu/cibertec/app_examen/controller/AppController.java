@@ -3,7 +3,7 @@ package pe.edu.cibertec.app_examen.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import pe.edu.cibertec.app_examen.service.AppService;
+import pe.edu.cibertec.app_examen.remote.service.AppService;
 
 import java.io.IOException;
 
